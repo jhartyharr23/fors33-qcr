@@ -1,0 +1,230 @@
+# FΦRS33 V3.1 - Quantum Circuit Optimizer
+
+**Predictive Error Mitigation with Acceleration-Based Physics**
+
+[![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
+[![Python 3.8+](https://img.shields.io/badge/python-3.8+-blue.svg)](https://www.python.org/downloads/)
+[![Version: V3.1](https://img.shields.io/badge/Version-V3.1-green.svg)](https://github.com/fors33/qcr)
+
+---
+
+## 🎯 The Problem
+
+You spend hours writing quantum algorithms, wait in IBM's queue, and get back noise. **Why?** You ran your circuit on qubits that were having a bad day.
+
+## 💡 The Solution
+
+FΦRS33 V3.1 is a **Predictive Error Mitigation System** that helps you get better results from quantum computers.
+
+### 🧠 V3.1 Features
+
+**Predictive Analysis**: Advanced algorithms detect potential issues before they affect your quantum circuits.
+
+**Intelligent Optimization**: System evaluates entire qubit configurations together, not just individual qubits.
+
+**Circuit-Aware Selection**: Knows your circuit structure to find the best qubit mapping for your specific algorithm.
+
+```python
+# Circuit-aware optimization
+from fors33 import Optimizer
+
+opt = Optimizer(ibm_token="YOUR_IBM_TOKEN")
+
+# Get optimal qubits for your circuit type
+rec = opt.get_recommendation(circuit_type="vqe", n_qubits=5)
+print(f"Optimal qubits: {rec['qubits']}")  # [20, 21, 22, 23, 24]
+```
+
+**Result:** Slightly worse data qubits (98%) + perfect connectivity (99%) = **Better overall performance**
+
+---
+
+## 🚀 Quick Start
+
+### 1. Install
+```bash
+pip install fors33
+```
+
+### 2. Get API Keys
+- **IBM Quantum Token**: https://quantum.ibm.com/
+- **FΦRS33 API Key**: https://api.fors33.com/register (Free tier: 50 credits/month)
+
+### 3. Run Your First Optimization
+```python
+import os
+from fors33 import Optimizer
+
+# Initialize
+opt = Optimizer(
+    ibm_token=os.getenv("IBM_QUANTUM_TOKEN"),
+    fors33_api_key=os.getenv("FORS33_API_KEY")
+)
+
+# Get circuit-aware recommendation (0.5 credits)
+rec = opt.get_recommendation(
+    circuit_type="vqe",  # or 'qaoa', 'repetition', 'custom'
+    n_qubits=5
+)
+
+# Run optimized job (1 credit)
+job = opt.run_optimized(
+    circuit_type="vqe",
+    backend="auto",  # Auto-selects best QPU
+    shots=1000
+)
+
+print(f"Job ID: {job.job_id()}")
+print(f"Monitor: https://quantum.ibm.com/jobs/{job.job_id()}")
+```
+
+---
+
+## 💳 Pricing
+
+| Tier | Credits/Month | Qubit Limit | Price |
+|------|--------------|-------------|-------|
+| **Free** | 50 | 3 qubits | $0 |
+| **Basic** | 500 | 10 qubits | $29/mo |
+| **Premium** | 2,000 | 20 qubits | $99/mo |
+| **Enterprise** | Unlimited | 127 qubits | $499/mo |
+
+**Credit Costs:**
+- Job submission: 1 credit
+- Recommendation only: 0.5 credits
+- Telemetry query: 0.1 credits
+
+**Free tier is perfect for testing!** Upgrade anytime at https://api.fors33.com/billing
+
+---
+
+## 🧠 How It Works
+
+### Circuit-Aware Selection
+FΦRS33 knows your circuit structure BEFORE choosing qubits:
+
+```python
+# Dense connectivity (VQE/QAOA)
+opt.get_recommendation(circuit_type="vqe", n_qubits=5)
+
+# Linear topology (Repetition codes)
+opt.get_recommendation(circuit_type="repetition", n_qubits=3)
+
+# Custom circuits
+opt.get_recommendation(circuit_type="custom", n_qubits=10)
+```
+
+### Holistic Scoring
+```
+Score = (Q_data × 2.0) + (Q_ancilla × 0.5) - (C_SWAP × N_swaps) - P_crosstalk
+```
+
+##  Examples
+
+### VQE Circuit
+```python
+from qiskit import QuantumCircuit
+from fors33 import Optimizer
+
+# Your VQE circuit
+qc = QuantumCircuit(5)
+qc.h(range(5))
+for i in range(4):
+    qc.cx(i, i+1)
+qc.measure_all()
+
+# Optimize and run
+opt = Optimizer(ibm_token="YOUR_TOKEN")
+job = opt.run_optimized(
+    circuit=qc,
+    circuit_type="vqe",
+    backend="auto",
+    shots=1000
+)
+```
+
+### QAOA Circuit
+```python
+# Dense connectivity optimization
+rec = opt.get_recommendation(circuit_type="qaoa", n_qubits=10)
+print(f"Optimal qubits: {rec['qubits']}")
+print(f"Backend: {rec['backend']}")
+```
+
+---
+
+## 🔧 Advanced Features
+
+### Monitor Your Credits
+```python
+balance = opt.get_credit_balance()
+print(f"Credits remaining: {balance}")
+
+usage = opt.get_usage_stats()
+print(f"Success rate: {usage['success_rate']}%")
+```
+
+### Custom Circuit Optimization
+```python
+# For your own circuit types
+rec = opt.get_recommendation(
+    circuit_type="custom",
+    n_qubits=7,
+    backend="ibm_fez"
+)
+```
+
+---
+
+## 🆚 Why FΦRS33?
+
+### The Problem with Reactive Monitoring
+Most tools detect errors **after** they happen. By then, your quantum state is already corrupted.
+
+### The FΦRS33 V3.1 Advantage
+- **Predictive Analysis**: Detects potential issues before they affect results
+- **Intelligent Selection**: Optimizes qubit configurations holistically
+- **Real-Time Insights**: Uses up-to-date quantum hardware information
+- **Circuit-Aware**: Considers your specific circuit structure
+- **Proven Results**: Validated on IBM Quantum hardware
+
+---
+
+## 📞 Support
+
+- **Free Tier**: GitHub Issues
+- **Paid Tiers**: Priority support
+- **Enterprise**: Dedicated support
+
+**Documentation**: https://docs.fors33.com  
+**Issues**: https://github.com/fors33/qcr/issues
+
+---
+
+## 📜 License
+
+MIT License - See LICENSE file for details
+
+---
+
+## 🚀 Get Started Now
+
+1. **Install**: `pip install fors33`
+2. **Register**: https://api.fors33.com/register (Free tier available)
+3. **Optimize**: `opt.get_recommendation(circuit_type="vqe", n_qubits=5)`
+
+**Stop wasting IBM credits. Start predicting failures with FΦRS33 V3.1!** 🎯
+
+---
+
+## 🔄 Migrating from V1.2?
+
+V3.1 is **backward compatible** with V1.2 API. Your existing code will work unchanged.
+
+**What's New in V3.1**:
+- Enhanced predictive algorithms
+- Improved optimization strategies
+- Better circuit-aware analysis
+- Updated performance metrics
+
+**Backward compatible** - upgrade anytime!

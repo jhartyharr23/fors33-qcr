@@ -48,7 +48,7 @@ pip install fors33
 
 ### 2. Get API Keys
 - **IBM Quantum Token**: https://quantum.ibm.com/
-- **FΦRS33 API Key**: https://api.fors33.com/register (Free tier: 50 credits/month)
+- **FΦRS33 API Key**: https://fors33.com (Free tier: 100 credits/month)
 
 ### 3. Run Your First Optimization
 ```python
@@ -89,10 +89,14 @@ print(f"Monitor: https://quantum.ibm.com/jobs/{job.job_id()}")
 | **Premium** | 2,000 | 20 qubits | $99/mo |
 | **Enterprise** | Unlimited | 127 qubits | $499/mo |
 
+| Tier | Credits | Price |
+|------|---------|-------|
+| **Starter** | +500 | $15 |
+| **Growth** | +2,000 | $50 |
+| **Scale** | +10,000 | $200 |
+
 **Credit Costs:**
 - Job submission: 1 credit
-- Recommendation only: 0.5 credits
-- Telemetry query: 0.1 credits
 
 **Free tier is perfect for testing!** Upgrade anytime at https://api.fors33.com/billing
 
@@ -197,7 +201,7 @@ Most tools detect errors **after** they happen. By then, your quantum state is a
 - **Enterprise**: Dedicated support
 
 **Documentation**: https://docs.fors33.com  
-**Issues**: https://github.com/fors33/qcr/issues
+**Issues**: https://github.com/fors33-qcr
 
 ---
 
@@ -210,7 +214,7 @@ MIT License - See LICENSE file for details
 ## 🚀 Get Started Now
 
 1. **Install**: `pip install fors33`
-2. **Register**: https://api.fors33.com/register (Free tier available)
+2. **Register**: https://fors33.com (Free tier available)
 3. **Optimize**: `opt.get_recommendation(circuit_type="vqe", n_qubits=5)`
 
 **Stop wasting IBM credits. Start predicting failures with FΦRS33 V3.1!** 🎯

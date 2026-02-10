@@ -84,10 +84,10 @@ print(f"Monitor: https://quantum.ibm.com/jobs/{job.job_id()}")
 
 | Tier | Credits/Month | Qubit Limit | Price |
 |------|--------------|-------------|-------|
-| **Free** | 50 | 3 qubits | $0 |
-| **Basic** | 500 | 10 qubits | $29/mo |
-| **Premium** | 2,000 | 20 qubits | $99/mo |
-| **Enterprise** | Unlimited | 127 qubits | $499/mo |
+| **Free** | 100 | 3 qubits | $0 |
+| **Basic** | 1,000 | 10 qubits | $29/mo |
+| **Premium** | 5,000 | 20 qubits | $99/mo |
+| **Enterprise** | Unlimited | 127 qubits | $199/mo |
 
 ## 📊 Add-On Packs Available
 

@@ -52,30 +52,23 @@ pip install fors33
 
 ### 3. Run Your First Optimization
 ```python
-import os
 from fors33 import Optimizer
 
-# Initialize
+# Initialize with your API keys
 opt = Optimizer(
-    ibm_token=os.getenv("IBM_QUANTUM_TOKEN"),
-    fors33_api_key=os.getenv("FORS33_API_KEY")
+    ibm_token="your_ibm_quantum_token",
+    fors33_api_key="your_fors33_api_key"
 )
 
-# Get circuit-aware recommendation (0.5 credits)
+# Get circuit-aware recommendation
 rec = opt.get_recommendation(
     circuit_type="vqe",  # or 'qaoa', 'repetition', 'custom'
     n_qubits=5
 )
 
-# Run optimized job (1 credit)
-job = opt.run_optimized(
-    circuit_type="vqe",
-    backend="auto",  # Auto-selects best QPU
-    shots=1000
-)
-
-print(f"Job ID: {job.job_id()}")
-print(f"Monitor: https://quantum.ibm.com/jobs/{job.job_id()}")
+print(f"Recommended qubits: {rec['qubits']}")
+print(f"Backend: {rec['backend']}")
+print(f"Fidelity score: {rec['fidelity_score']}")
 ```
 
 ---

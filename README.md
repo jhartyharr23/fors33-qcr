@@ -48,7 +48,7 @@ pip install fors33
 
 ### 2. Get API Keys
 - **IBM Quantum Token**: https://quantum.ibm.com/
-- **FΦRS33 API Key**: https://fors33.com (Free tier: 100 credits/month)
+- **FΦRS33 API Key**: https://fors33.com/quantum/qcr/api-keys/ (Free tier: 100 credits/month)
 
 ### 3. Run Your First Optimization
 ```python

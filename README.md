@@ -1,6 +1,6 @@
 # FΦRS33 V3.1 - Quantum Circuit Optimizer
 
-**Predictive Error Mitigation with Acceleration-Based Physics**
+**Intelligent Quantum Circuit Optimization**
 
 [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
 [![Python 3.8+](https://img.shields.io/badge/python-3.8+-blue.svg)](https://www.python.org/downloads/)
@@ -14,15 +14,15 @@ You spend hours writing quantum algorithms, wait in IBM's queue, and get back no
 
 ## 💡 The Solution
 
-FΦRS33 V3.1 is a **Predictive Error Mitigation System** that helps you get better results from quantum computers.
+FΦRS33 V3.1 is a **Quantum Circuit Optimization Service** that helps you get better results from quantum computers.
 
 ### 🧠 V3.1 Features
 
-**Predictive Analysis**: Advanced algorithms detect potential issues before they affect your quantum circuits.
-
-**Intelligent Optimization**: System evaluates entire qubit configurations together, not just individual qubits.
+**Intelligent Optimization**: Evaluates entire qubit configurations together, not just individual qubits.
 
 **Circuit-Aware Selection**: Knows your circuit structure to find the best qubit mapping for your specific algorithm.
+
+**Real-Time Hardware Awareness**: Uses continuously updated hardware telemetry for optimal decisions.
 
 ```python
 # Circuit-aware optimization
@@ -93,7 +93,7 @@ print(f"Fidelity score: {rec['fidelity_score']}")
 **Credit Costs:**
 - Job submission: 1 credit
 
-**Free tier is perfect for testing!** Upgrade anytime at https://api.fors33.com/billing
+**Free tier is perfect for testing!** Upgrade anytime at https://fors33.com/quantum/qcr/api-keys
 
 ---
 
@@ -113,10 +113,8 @@ opt.get_recommendation(circuit_type="repetition", n_qubits=3)
 opt.get_recommendation(circuit_type="custom", n_qubits=10)
 ```
 
-### Holistic Scoring
-```
-Score = (Q_data × 2.0) + (Q_ancilla × 0.5) - (C_SWAP × N_swaps) - P_crosstalk
-```
+### Intelligent Scoring
+FΦRS33 evaluates qubit configurations using a proprietary scoring system that balances quality, connectivity, and error rates.
 
 ##  Examples
 
@@ -154,13 +152,10 @@ print(f"Backend: {rec['backend']}")
 
 ## 🔧 Advanced Features
 
-### Monitor Your Credits
+### Monitor Your Usage
 ```python
-balance = opt.get_credit_balance()
-print(f"Credits remaining: {balance}")
-
-usage = opt.get_usage_stats()
-print(f"Success rate: {usage['success_rate']}%")
+usage = opt.get_usage()
+print(f"API usage: {usage}")
 ```
 
 ### Custom Circuit Optimization
@@ -181,9 +176,8 @@ rec = opt.get_recommendation(
 Most tools detect errors **after** they happen. By then, your quantum state is already corrupted.
 
 ### The FΦRS33 V3.1 Advantage
-- **Predictive Analysis**: Detects potential issues before they affect results
-- **Intelligent Selection**: Optimizes qubit configurations holistically
-- **Real-Time Insights**: Uses up-to-date quantum hardware information
+- **Intelligent Selection**: Optimizes qubit configurations end-to-end
+- **Real-Time Awareness**: Uses continuously updated hardware telemetry
 - **Circuit-Aware**: Considers your specific circuit structure
 - **Proven Results**: Validated on IBM Quantum hardware
 
@@ -221,7 +215,6 @@ MIT License - See LICENSE file for details
 V3.1 is **backward compatible** with V1.2 API. Your existing code will work unchanged.
 
 **What's New in V3.1**:
-- Enhanced predictive algorithms
 - Improved optimization strategies
 - Better circuit-aware analysis
 - Updated performance metrics

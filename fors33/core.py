@@ -1,4 +1,4 @@
-"""FΦRS33 V1.2 - Clean Core Module"""
+"""FΦRS33 - Quantum Circuit Optimizer SDK"""
 
 from qiskit import transpile
 from qiskit_ibm_runtime import QiskitRuntimeService, SamplerV2 as Sampler
@@ -10,13 +10,13 @@ from typing import Optional, Dict
 class FORS33Client:
     """Client for FΦRS33 Telemetry API."""
     
-    def __init__(self, api_key: Optional[str] = None, api_url: str = "https://api.fors33.com"):
+    def __init__(self, api_key: Optional[str] = None, api_url: str = "https://fors33.com"):
         self.api_key = api_key or os.getenv('FORS33_API_KEY')
         self.api_url = api_url.rstrip('/')
         
         if not self.api_key:
             raise ValueError(
-                "FORS33 API key required. Get free key at: https://api.fors33.com/register"
+                "FORS33 API key required. Get your key at: https://fors33.com/quantum/qcr/api-keys"
             )
         
         self.headers = {
@@ -24,14 +24,33 @@ class FORS33Client:
             'Content-Type': 'application/json'
         }
     
-    def get_recommendation(self, backend: str = 'auto', num_qubits: int = 3, 
+    def get_recommendation(self, backend: str = 'auto', num_qubits: int = None,
+                          data_qubits: int = None, ancilla_qubits: int = 0,
                           circuit_type: str = 'custom') -> Dict:
-        """Get optimal qubit recommendation."""
+        """Get optimal qubit recommendation.
+        
+        Args:
+            backend: Backend name or 'auto'
+            data_qubits: Number of data qubits in your circuit
+            ancilla_qubits: Number of ancilla/syndrome qubits (default: 0)
+            num_qubits: Total qubits (backward compat, used if data_qubits not set)
+            circuit_type: 'vqe', 'qaoa', 'repetition', or 'custom'
+        
+        Returns:
+            Dict with data_qubits, ancilla_qubits, qubits (combined layout),
+            fidelity_score, confidence, etc.
+        """
         url = f"{self.api_url}/api/v1/recommendation"
-        params = {'backend': backend, 'num_qubits': num_qubits, 'circuit_type': circuit_type}
+        
+        if data_qubits is not None:
+            params = {'backend': backend, 'data_qubits': data_qubits,
+                      'ancilla_qubits': ancilla_qubits, 'circuit_type': circuit_type}
+        else:
+            params = {'backend': backend, 'num_qubits': num_qubits or 3,
+                      'circuit_type': circuit_type}
         
         try:
-            response = requests.get(url, headers=self.headers, params=params, timeout=10)
+            response = requests.get(url, headers=self.headers, params=params, timeout=120)
             response.raise_for_status()
             return response.json()
         except requests.exceptions.RequestException as e:
@@ -42,7 +61,7 @@ class FORS33Client:
         url = f"{self.api_url}/api/v1/usage"
         
         try:
-            response = requests.get(url, headers=self.headers, timeout=10)
+            response = requests.get(url, headers=self.headers, timeout=30)
             response.raise_for_status()
             return response.json()
         except requests.exceptions.RequestException as e:
@@ -50,7 +69,7 @@ class FORS33Client:
 
 
 class Optimizer:
-    """FΦRS33 V3.1 Quantum Optimizer with acceleration-based predictive error mitigation."""
+    """FΦRS33 V3.1 Quantum Circuit Optimizer."""
     
     def __init__(self, ibm_token: str, fors33_api_key: Optional[str] = None):
         """
@@ -64,54 +83,68 @@ class Optimizer:
         self.client = FORS33Client(api_key=fors33_api_key)
         self.version = "3.1.0"
     
-    def get_recommendation(self, circuit_type: str = "custom", n_qubits: int = 3, 
+    def get_recommendation(self, circuit_type: str = "custom", 
+                          data_qubits: int = 3, ancilla_qubits: int = 0,
                           backend: str = "auto") -> Dict:
         """
-        Get V3.1 circuit-aware recommendation with acceleration-based optimization.
+        Get V3.1 circuit-aware recommendation.
         
         Args:
             circuit_type: 'vqe', 'qaoa', 'repetition', or 'custom'
-            n_qubits: Number of data qubits needed
+            data_qubits: Number of data qubits in your circuit
+            ancilla_qubits: Number of ancilla/syndrome qubits (default: 0)
             backend: Backend name or 'auto'
         
         Returns:
-            Dict with qubits, backend, fidelity_score, etc.
+            Dict with data_qubits, ancilla_qubits, qubits (combined layout),
+            fidelity_score, confidence, etc.
         """
         return self.client.get_recommendation(
-            backend=backend, 
-            num_qubits=n_qubits, 
+            backend=backend,
+            data_qubits=data_qubits,
+            ancilla_qubits=ancilla_qubits,
             circuit_type=circuit_type
         )
     
-    def run_optimized(self, circuit_type: str = "custom", backend: str = "auto", 
+    def run_optimized(self, circuit, circuit_type: str = "custom", 
+                     backend: str = "auto", data_qubits: Optional[int] = None,
+                     ancilla_qubits: Optional[int] = None,
                      shots: int = 1000) -> object:
         """
-        Execute optimized quantum job.
+        Transpile and execute a circuit using FΦRS33 optimized qubit selection.
         
         Args:
-            circuit_type: Type of circuit for optimization
+            circuit: Your QuantumCircuit to optimize and run
+            circuit_type: 'vqe', 'qaoa', 'repetition', or 'custom'
             backend: Target backend or 'auto'
+            data_qubits: Number of data qubits (auto-detected from circuit if omitted)
+            ancilla_qubits: Number of ancilla qubits (default: 0)
             shots: Number of execution shots
         
         Returns:
             Qiskit Runtime job object
         """
-        from .circuits import build_velocity_circuit
+        # Auto-detect from circuit if not specified
+        if data_qubits is None:
+            data_qubits = circuit.num_qubits
+            ancilla_qubits = 0
+        elif ancilla_qubits is None:
+            ancilla_qubits = 0
         
-        # Get recommendation
-        rec = self.get_recommendation(circuit_type=circuit_type, n_qubits=3, backend=backend)
+        # Get optimal qubit layout from FΦRS33 API
+        rec = self.get_recommendation(
+            circuit_type=circuit_type, data_qubits=data_qubits,
+            ancilla_qubits=ancilla_qubits, backend=backend
+        )
         
         selected_backend = rec['backend']
         qubits = rec['qubits']
         
-        # Get backend
+        # Get backend and transpile with our recommended layout
         backend_obj = self.service.backend(selected_backend)
+        t_qc = transpile(circuit, backend_obj, initial_layout=qubits, optimization_level=3)
         
-        # Build and transpile circuit
-        qc = build_velocity_circuit()
-        t_qc = transpile(qc, backend_obj, initial_layout=qubits, optimization_level=3)
-        
-        # Run
+        # Execute
         sampler = Sampler(mode=backend_obj)
         job = sampler.run([t_qc], shots=shots)
         

@@ -1,12 +1,6 @@
 """
 FΦRS33 V3.1 - Complete Examples
-All examples in one file for easy reference
-
-V3.1 Features:
-- Enhanced predictive algorithms
-- Intelligent optimization strategies
-- Circuit-aware analysis
-- Real-time hardware insights
+All examples in one file for easy reference.
 """
 
 import os
@@ -20,8 +14,7 @@ from fors33 import Optimizer
 # Get from https://quantum.ibm.com/
 IBM_TOKEN = os.getenv("IBM_QUANTUM_TOKEN")
 
-# Get from https://api.fors33.com/register (Free tier: 50 credits/month)
-# V3.1: Backward compatible with V1.2 API
+# Get from https://fors33.com/quantum/qcr/api-keys (Free tier: 50 credits/month)
 FORS33_KEY = os.getenv("FORS33_API_KEY")
 
 if not IBM_TOKEN or not FORS33_KEY:
@@ -44,13 +37,13 @@ print("="*70)
 # Get optimal qubits for VQE circuit
 rec = opt.get_recommendation(
     circuit_type="vqe",  # Dense connectivity needed
-    n_qubits=5,
+    data_qubits=5,
     backend="auto"  # Auto-select best QPU
 )
 
 print(f"✅ Optimal qubits: {rec['qubits']}")
 print(f"✅ Backend: {rec['backend']}")
-print(f"✅ Avg fidelity: {rec['avg_fidelity']*100:.1f}%")
+print(f"✅ Fidelity score: {rec['fidelity_score']*100:.1f}%")
 print(f"💳 Credits used: 0.5")
 
 # ============================================================================
@@ -58,7 +51,7 @@ print(f"💳 Credits used: 0.5")
 # ============================================================================
 
 print("\n" + "="*70)
-print("EXAMPLE 2: VQE Circuit with Holistic Optimization")
+print("EXAMPLE 2: VQE Circuit with Intelligent Optimization")
 print("="*70)
 
 # Create VQE-like circuit
@@ -99,7 +92,7 @@ qaoa_circuit.cx(9, 0)  # Ring connectivity
 qaoa_circuit.measure_all()
 
 # Get recommendation for QAOA
-qaoa_rec = opt.get_recommendation(circuit_type="qaoa", n_qubits=10)
+qaoa_rec = opt.get_recommendation(circuit_type="qaoa", data_qubits=10)
 print(f"✅ QAOA optimal qubits: {qaoa_rec['qubits']}")
 print(f"💳 Credits used: 0.5")
 
@@ -108,18 +101,33 @@ print(f"💳 Credits used: 0.5")
 # ============================================================================
 
 print("\n" + "="*70)
-print("EXAMPLE 4: Built-in Velocity Profile (Repetition Code)")
+print("EXAMPLE 4: Repetition Code with Optimized Layout")
 print("="*70)
 
-# Use built-in Velocity profile (Line topology @ 700dt)
-velocity_job = opt.run_optimized(
+# Build a simple repetition code circuit
+rep_circuit = QuantumCircuit(5, 5)
+rep_circuit.h(0)
+rep_circuit.cx(0, 1)
+rep_circuit.cx(1, 2)
+rep_circuit.barrier()
+rep_circuit.cx(0, 3)
+rep_circuit.cx(1, 3)
+rep_circuit.cx(1, 4)
+rep_circuit.cx(2, 4)
+rep_circuit.measure(range(5), range(5))
+
+# Run with FORS33 optimized qubit layout
+rep_job = opt.run_optimized(
+    circuit=rep_circuit,
     circuit_type="repetition",
     backend="ibm_fez",
+    data_qubits=3,
+    ancilla_qubits=2,
     shots=500
 )
 
-print(f"✅ Velocity job: {velocity_job.job_id()}")
-print(f"📊 Expected fidelity: 85.0%")
+print(f"✅ Repetition code job: {rep_job.job_id()}")
+print(f"\U0001f9e0 Running with optimized qubit selection")
 print(f"💳 Credits used: 1")
 
 # ============================================================================
@@ -130,15 +138,9 @@ print("\n" + "="*70)
 print("EXAMPLE 5: Monitor Your Usage")
 print("="*70)
 
-# Check remaining credits
-balance = opt.get_credit_balance()
-print(f"💳 Credits remaining: {balance}")
-
 # Get usage statistics
-usage = opt.get_usage_stats()
-print(f"📊 Jobs submitted: {usage['jobs']}")
-print(f"📊 Credits used: {usage['credits']}")
-print(f"📊 Success rate: {usage['success_rate']}%")
+usage = opt.get_usage()
+print(f"📊 API usage: {usage}")
 
 # ============================================================================
 # SUMMARY
@@ -155,12 +157,12 @@ print(f"""
    - Use run_optimized() for 1 credit (full job submission)
    - Circuit-aware selection improves performance
    - Free tier: 50 credits/month = 50 jobs or 100 recommendations
-   - V3.1: Acceleration-based Φ predicts failures before they happen
+   - V3.1: Real-time hardware awareness for better results
 
 🚀 Next Steps:
    1. Run your own circuits with circuit_type parameter
    2. Monitor your credit usage
-   3. Upgrade when ready: https://api.fors33.com/billing
+   3. Upgrade when ready: https://fors33.com/quantum/qcr/api-keys
 
 📚 Documentation: https://docs.fors33.com
 💬 Community: https://discord.gg/fors33

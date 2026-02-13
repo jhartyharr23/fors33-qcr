@@ -1,4 +1,4 @@
-"""FΦRS33 V3.1 - Acceleration-Based Predictive Error Mitigation"""
+"""FΦRS33 V3.1 - Quantum Circuit Optimizer"""
 
 from .core import Optimizer
 
